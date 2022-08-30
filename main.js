@@ -10,6 +10,7 @@ let arregloParedes = [];
 let move = [];
 
 let speed = 5;
+let dead = false;
 let pause = false;
 
 // ! Imagenes !
@@ -20,13 +21,25 @@ let p_right = new Image();
 let p_back = new Image();
 let p_left = new Image();
 
+// * Novia
 let witch = new Image();
 
+// * Skin de la pared
 let wall_image = new Image();
+
+// * Skin del suelo
+let floor_image = new Image();
+
+// * Background Canvas
+let bg_canvas = new Image();
 
 // ! Audio !
 // TODO: agregar todos los audios
-let sonido_ambiente = new Audio();
+let sonidoAmbiente_audio = new Audio();
+let completado_audio = new Audio();
+let botonStart_audio = new Audio();
+let instrucciones_audio = new Audio();
+let pasos_audio = new Audio();
 
 let x = 240;
 let y = 240;
@@ -34,70 +47,62 @@ let y = 240;
 function start() {
     canvas = document.getElementById('canvas');
     context = canvas.getContext('2d');
-    // Todo: Poner bg de una imagen de fondo stardew valley
-    canvas.style.background = '#ff8';
 
-    player1 = new Jugador(x, y, 40, 40, 'red', 3);
-    player2 = new Cuadrado(getRandomInt(900), getRandomInt(540), 40, 40, 'red');
+    canvas.width = 1000;
+    canvas.height = 1000;
 
-    // * Generador de obstaculos
-    for (let i = 0; i <= 4; i++) {
-        let obstaculo = new Cuadrado(
-            getRandomInt(900),
-            getRandomInt(540),
-            40,
-            100,
-            '#808080'
-        );
-        arregloParedes.push(obstaculo);
-    }
-    zombie.src = 'zombie.png';
-    carne.src = 'carne.png';
-    wall.src = 'wall.jpg';
+    bg_canvas.src = './imgs/background_canvas.png';
+    context.drawImage(bg_canvas, 0, 0);
 
-    sonido1.src = 'sonido_zombie.mp3';
+    player = new Jugador(x, y, 20, 37, 'red', 3);
+
+	// Cargando imagenes del protagonista
+    p_front.src = './imgs/front.png';
+    p_right.src = './imgs/right.png';
+    p_back.src = './imgs/back.png';
+    p_left.src = './imgs/left.png';
+
+	// Sonido ambiente y configuraciones para bulce y volumen
+    sonidoAmbiente_audio.src = './sounds/ambiental_sound.mp3';
+    sonidoAmbiente_audio.preload = 'auto';
+	sonidoAmbiente_audio.loop = true;
+	sonidoAmbiente_audio.volume = 0.3; 
+    sonidoAmbiente_audio.play();
+
+	pasos_audio.src = './sounds/pasos.mp3';
+	pasos_audio.preload = 'auto';
+	pasos_audio.volume = 0.1; 
+
+
     paint();
 }
 
 //  Funcion de pintar
 const paint = () => {
-    window.requestAnimationFrame(paint);
+    requestAnimationFrame(paint);
 
     // Rellenar el canvas y hacer como que borra el trayecto
-    context.fillStyle = '#ff8';
-    context.fillRect(0, 0, 1000, 600);
+    context.drawImage(bg_canvas, 0, 0);
 
     context.fillStyle = '#000';
     context.font = '25px Arial';
-    context.fillText(
-        'Score: ' +
-            score +
-            '                                   ' +
-            'Speed: ' +
-            speed +
-            '                                                ' +
-            'Lifes: ' +
-            player1.lifes +
-            ' ',
-        20,
-        40
-    );
+    context.fillText('Lifes: ' + player.lifes + ' ', 20, 40);
 
     // * Creando los obstaculos
-    arregloParedes.map((obstaculo) => {
-        obstaculo.dibujar(context);
-    });
+    // arregloParedes.map((obstaculo) => {
+    //     obstaculo.dibujar(context);
+    // });
 
-    //  * Se dibuja la imagen del zombie en el jugador *
-    context.drawImage(zombie, player1.x, player1.y);
-
-    //  * Se dibuja la imagen del carne al bono*
-    context.drawImage(carne, player2.x, player2.y);
+    //  * Se dibuja la imagen principal del jugador en el jugador *
+    context.drawImage(p_front, player.x, player.y);
 
     //  * Se dibuja la imagen del carne al bono*
-    arregloParedes.map((obstaculo) => {
-        context.drawImage(wall, obstaculo.x, obstaculo.y, 40, 100);
-    });
+    // context.drawImage(carne, player2.x, player2.y);
+
+    //  * Se dibuja la imagen del carne al bono*
+    // arregloParedes.map((obstaculo) => {
+    //     context.drawImage(wall, obstaculo.x, obstaculo.y, 40, 100);
+    // });
 
     if (!pause && !dead) {
         update();
@@ -117,72 +122,87 @@ const paint = () => {
 };
 
 const update = () => {
+    // right side
     if (move[68] == true) {
-        player1.x += speed;
-        if (player1.x > 1200) {
-            player1.x = 0;
+        player.x += speed;
+        if (player.x > 1200) {
+            player.x = 0;
         }
-    }
-    if (move[83] == true) {
-        player1.y += speed;
-        if (player1.y > 700) {
-            player1.y = 0;
-        }
+        context.drawImage(p_right, player.x, player.y);
+		pasos_audio.play();
     }
 
-    if (move[65] == true) {
-        player1.x -= speed;
-        if (player1.x < 0) {
-            player1.x = 1200;
+    // down side
+    if (move[83] == true) {
+        player.y += speed;
+        if (player.y > 700) {
+            player.y = 0;
         }
+        context.drawImage(p_front, player.x, player.y);
+		pasos_audio.play();
+
     }
-    if (move[87] == true) {
-        player1.y -= speed;
-        if (player1.y < 0) {
-            player1.y = 700;
+
+    // left side
+    if (move[65] == true) {
+        player.x -= speed;
+        if (player.x < 0) {
+            player.x = 1200;
         }
+        context.drawImage(p_left, player.x, player.y);
+		pasos_audio.play();
+
+    }
+
+    // up side
+    if (move[87] == true) {
+        player.y -= speed;
+        if (player.y < 0) {
+            player.y = 700;
+        }
+        context.drawImage(p_back, player.x, player.y);
+		pasos_audio.play();
+
     }
 
     /*
      *   Condicional para saber si nuestro player a tocado la recompensa para subir velocidad y dar mas score
      */
-    if (player1.se_tocan(player2)) {
-        player2.x = getRandomInt(900);
-        player2.y = getRandomInt(500);
-        score += 10;
-        speed += 5;
-        sonido1.play();
-    }
+    // if (player.se_tocan(player2)) {
+    //     player2.x = getRandomInt(900);
+    //     player2.y = getRandomInt(500);
+    //     score += 10;
+    //     speed += 5;
+    //     sonido1.play();
+    // }
 
     /*
      *   Buscar que nuestro player no toque ninguno de los obstaculos o se detendra el juego
      */
-    arregloParedes.map((obstaculo) => {
-        if (player1.se_tocan(obstaculo)) {
-            if (player1.lifes <= 1) {
-                dead = true;
-                speed = 0;
-            } else {
-                player1.lifes = player1.lifes - 1;
-                player1.x = getRandomInt(900);
-                player1.y = getRandomInt(500);
-            }
-        }
-    });
+    // arregloParedes.map((obstaculo) => {
+    //     if (player.se_tocan(obstaculo)) {
+    //         if (player.lifes <= 1) {
+    //             dead = true;
+    //             speed = 0;
+    //         } else {
+    //             player.lifes = player.lifes - 1;
+    //             player.x = getRandomInt(900);
+    //             player.y = getRandomInt(500);
+    //         }
+    //     }
+    // });
 };
 
 // * Clase Cuadrado que es nuestra clase molde para todo los objetos
 class Cuadrado {
-    constructor(x, y, w, h, color) {
+    constructor(x, y, w, h) {
         this.x = x;
         this.y = y;
         this.w = w;
         this.h = h;
-        this.color = color;
     }
 
     dibujar = function (context) {
-        context.fillStyle = this.color;
         context.fillRect(this.x, this.y, this.w, this.h);
         context.strokeRect(this.x, this.y, this.w, this.h);
     };
@@ -199,62 +219,23 @@ class Cuadrado {
     };
 }
 
-// * Clase jugador para poder diferenciarlo de las clase de obstaculos
-class Jugador {
-    constructor(x, y, w, h, color, lifes) {
-        this.x = x;
-        this.y = y;
-        this.w = h;
-        this.h = h;
-        this.color = color;
+// * Clase jugador para poder diferenciarlo de las clase de obstaculos, el cual cuenta con vidas
+class Jugador extends Cuadrado {
+    constructor(x, y, w, h, lifes) {
+        super(x, y, w, h);
         this.lifes = lifes;
     }
-
-    dibujar = function (context) {
-        context.fillStyle = this.color;
-        context.fillRect(this.x, this.y, this.w, this.h);
-        context.strokeRect(this.x, this.y, this.w, this.h);
-    };
-
-    se_tocan = function (target) {
-        if (
-            this.x < target.x + target.w &&
-            this.x + this.w > target.x &&
-            this.y < target.y + target.h &&
-            this.y + this.h > target.y
-        ) {
-            return true;
-        }
-    };
 }
 
-// * Movimiento con tecla y flechas
+// * Detectar pause
 document.addEventListener('keydown', ({ keyCode }) => {
-    // arriba
-    if (keyCode == 87 || keyCode == 38) {
-        direction = 'up';
-    }
-    // derecha
-    if (keyCode == 68 || keyCode == 39) {
-        direction = 'right';
-    }
-
-    // abajo
-    if (keyCode == 83 || keyCode == 40) {
-        direction = 'down';
-    }
-
-    // izquierda
-    if (keyCode == 65 || keyCode == 37) {
-        direction = 'left';
-    }
-
     // Pause
     if (keyCode == 32) {
         pause = pause ? false : true;
     }
 });
 
+// * Movilidad fluida
 document.addEventListener('keydown', function ({ keyCode }) {
     move[keyCode] = true;
 });
@@ -263,14 +244,3 @@ document.addEventListener('keyup', function ({ keyCode }) {
 });
 
 window.addEventListener('load', start);
-
-window.requestAnimationFrame = (function () {
-    return (
-        window.requestAnimationFrame ||
-        window.webkitRequestAnimationFrame ||
-        window.mozRequestAnimationFrame ||
-        function (callback) {
-            window.setTimeout(callback, 17);
-        }
-    );
-})();
