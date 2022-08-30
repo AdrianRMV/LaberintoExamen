@@ -9,7 +9,7 @@ let wall = null;
 let arregloParedes = [];
 let move = [];
 
-let speed = 5;
+let speed = 2;
 let dead = false;
 let pause = false;
 
@@ -18,8 +18,15 @@ let pause = false;
 // * Protagonista Angulos
 let p_front = new Image();
 let p_right = new Image();
+let p_right_down = new Image();
+let p_right_up = new Image();
 let p_back = new Image();
 let p_left = new Image();
+let p_left_down = new Image();
+let p_left_up = new Image();
+
+// * Transparente
+let hide = new Image();
 
 // * Novia
 let witch = new Image();
@@ -48,7 +55,7 @@ function start() {
     canvas = document.getElementById('canvas');
     context = canvas.getContext('2d');
 
-    canvas.width = 1000;
+    canvas.width = 1500;
     canvas.height = 1000;
 
     bg_canvas.src = './imgs/background_canvas.png';
@@ -56,23 +63,36 @@ function start() {
 
     player = new Jugador(x, y, 20, 37, 'red', 3);
 
-	// Cargando imagenes del protagonista
-    p_front.src = './imgs/front.png';
-    p_right.src = './imgs/right.png';
-    p_back.src = './imgs/back.png';
-    p_left.src = './imgs/left.png';
+    // Cargando imagenes del protagonista
 
-	// Sonido ambiente y configuraciones para bulce y volumen
+    // * Enfrente *
+    p_front.src = './imgs/front.png';
+
+    // * Angulos derecha *
+    p_right.src = './imgs/right.png';
+    p_right_down.src = './imgs/rightDown.png';
+    p_right_up.src = './imgs/rightUp.png';
+
+    // * Abajo *
+    p_back.src = './imgs/back.png';
+
+    // * Angulos izquierda *
+    p_left.src = './imgs/left.png';
+    p_left_down.src = './imgs/leftDown.png';
+    p_left_up.src = './imgs/leftUp.png';
+
+    hide.src = './imgs/transparent.png';
+
+    // Sonido ambiente y configuraciones para bulce y volumen
     sonidoAmbiente_audio.src = './sounds/ambiental_sound.mp3';
     sonidoAmbiente_audio.preload = 'auto';
-	sonidoAmbiente_audio.loop = true;
-	sonidoAmbiente_audio.volume = 0.3; 
+    sonidoAmbiente_audio.loop = true;
+    sonidoAmbiente_audio.volume = 0.3;
     sonidoAmbiente_audio.play();
 
-	pasos_audio.src = './sounds/pasos.mp3';
-	pasos_audio.preload = 'auto';
-	pasos_audio.volume = 0.1; 
-
+    pasos_audio.src = './sounds/pasos.mp3';
+    pasos_audio.preload = 'auto';
+    pasos_audio.volume = 0.1;
 
     paint();
 }
@@ -83,10 +103,6 @@ const paint = () => {
 
     // Rellenar el canvas y hacer como que borra el trayecto
     context.drawImage(bg_canvas, 0, 0);
-
-    context.fillStyle = '#000';
-    context.font = '25px Arial';
-    context.fillText('Lifes: ' + player.lifes + ' ', 20, 40);
 
     // * Creando los obstaculos
     // arregloParedes.map((obstaculo) => {
@@ -125,34 +141,58 @@ const update = () => {
     // right side
     if (move[68] == true) {
         player.x += speed;
-        if (player.x > 1200) {
-            player.x = 0;
-        }
+        // if (player.x > 1500) {
+        //     player.x = 0;
+        // }
         context.drawImage(p_right, player.x, player.y);
-		pasos_audio.play();
+        pasos_audio.play();
     }
 
     // down side
     if (move[83] == true) {
         player.y += speed;
-        if (player.y > 700) {
-            player.y = 0;
-        }
+        // if (player.y > 700) {
+        //     player.y = 0;
+        // }
         context.drawImage(p_front, player.x, player.y);
-		pasos_audio.play();
-
+        pasos_audio.play();
     }
 
     // left side
     if (move[65] == true) {
         player.x -= speed;
-        if (player.x < 0) {
-            player.x = 1200;
-        }
+        // if (player.x < 0) {
+        //     player.x = 1200;
+        // }
+        pasos_audio.play();
         context.drawImage(p_left, player.x, player.y);
-		pasos_audio.play();
-
+        // context.drawImage(transparent, player.x, player.y);
     }
+
+    /*
+        TODO: Angulo de direcciones
+
+        // left and down
+        if (move[65] == true && move[83] == true) {
+            context.drawImage(transparent, player.x, player.y);
+            context.drawImage(p_left_down, player.x, player.y);
+        }
+
+        // left and up
+        if (move[65] == true && move[87] == true) {
+            context.drawImage(p_left_up, player.x, player.y);
+        }
+
+        // Right and down
+        if (move[68] == true && move[83] == true) {
+            context.drawImage(p_right_down, player.x, player.y);
+        }
+
+        // Right and up
+        if (move[68] == true && move[87] == true) {
+            context.drawImage(p_right_up, player.x, player.y);
+        }
+    */
 
     // up side
     if (move[87] == true) {
@@ -161,8 +201,7 @@ const update = () => {
             player.y = 700;
         }
         context.drawImage(p_back, player.x, player.y);
-		pasos_audio.play();
-
+        pasos_audio.play();
     }
 
     /*
