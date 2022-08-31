@@ -51,6 +51,8 @@ let pasos_audio = new Audio();
 let x = 240;
 let y = 240;
 
+let ptrn = null;
+
 function start() {
     canvas = document.getElementById('canvas');
     context = canvas.getContext('2d');
@@ -58,10 +60,16 @@ function start() {
     canvas.width = 1500;
     canvas.height = 1000;
 
-    bg_canvas.src = './imgs/background_canvas.png';
-    context.drawImage(bg_canvas, 0, 0);
+    bg_canvas.src = './imgs/floorSkin.png';
+    // context.drawImage(bg_canvas, 0, 0);
 
-    player = new Jugador(x, y, 20, 37, 'red', 3);
+    // bg_canvas.addEventListener('load', () => {
+    //     const ptrn = context.createPattern(bg_canvas, 'repeat'); // Create a pattern with this image, and set it to "repeat".
+    //     context.fillStyle = ptrn;
+    //     context.fillRect(0, 0, canvas.width, canvas.height); // context.fillRect(x, y, width, height);
+    // });
+
+    player = new Jugador(x, y, 20, 37, 3);
 
     // Cargando imagenes del protagonista
 
@@ -84,17 +92,22 @@ function start() {
     hide.src = './imgs/transparent.png';
 
     // Sonido ambiente y configuraciones para bulce y volumen
+
+    // sonidoAmbiente_audio.muted = true;
+    // document.body.addEventListener("mousemove", function () {
+
+    pasos_audio.src = './sounds/pasos.mp3';
+    pasos_audio.preload = 'auto';
+    pasos_audio.volume = 0.1;
+    
     sonidoAmbiente_audio.src = './sounds/ambiental_sound.mp3';
     sonidoAmbiente_audio.preload = 'auto';
     sonidoAmbiente_audio.loop = true;
     sonidoAmbiente_audio.volume = 0.3;
     sonidoAmbiente_audio.play();
 
-    pasos_audio.src = './sounds/pasos.mp3';
-    pasos_audio.preload = 'auto';
-    pasos_audio.volume = 0.1;
-
     paint();
+
 }
 
 //  Funcion de pintar
@@ -102,7 +115,10 @@ const paint = () => {
     requestAnimationFrame(paint);
 
     // Rellenar el canvas y hacer como que borra el trayecto
-    context.drawImage(bg_canvas, 0, 0);
+    // context.drawImage(bg_canvas, 0, 0);
+    ptrn = context.createPattern(bg_canvas, 'repeat'); // Create a pattern with this image, and set it to "repeat".
+    context.fillStyle = ptrn;
+    context.fillRect(0, 0, canvas.width, canvas.height); // context.fillRect(x, y, width, height);
 
     // * Creando los obstaculos
     // arregloParedes.map((obstaculo) => {
