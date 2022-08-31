@@ -1,4 +1,9 @@
-import './style.css';
+// Opciones modal
+let btn_iniciar = document.getElementById('iniciar-btn');
+let boton_menu_principal = document.getElementById('btn-menu');
+let modal_parent = document.getElementById('staticBackdrop');
+
+let loader = document.getElementById('load');
 
 let canvas = null;
 let context = null;
@@ -9,7 +14,7 @@ let wall = null;
 let arregloParedes = [];
 let move = [];
 
-let speed = 2;
+let speed = 3.5;
 let dead = false;
 let pause = false;
 
@@ -53,7 +58,20 @@ let y = 240;
 
 let ptrn = null;
 
+let tempo;
+
+function loading() {
+    loader.style.display = 'block';
+    loader.style.opacity = '1';
+    tempo = setTimeout(start, 3000);
+}
+
 function start() {
+    loader.style.opacity = '0';
+    loader.style.display = 'none';
+    document.getElementById('myDiv').style.display = 'block';
+
+
     canvas = document.getElementById('canvas');
     context = canvas.getContext('2d');
 
@@ -61,13 +79,6 @@ function start() {
     canvas.height = 1000;
 
     bg_canvas.src = './imgs/floorSkin.png';
-    // context.drawImage(bg_canvas, 0, 0);
-
-    // bg_canvas.addEventListener('load', () => {
-    //     const ptrn = context.createPattern(bg_canvas, 'repeat'); // Create a pattern with this image, and set it to "repeat".
-    //     context.fillStyle = ptrn;
-    //     context.fillRect(0, 0, canvas.width, canvas.height); // context.fillRect(x, y, width, height);
-    // });
 
     player = new Jugador(x, y, 20, 37, 3);
 
@@ -89,52 +100,61 @@ function start() {
     p_left_down.src = './imgs/leftDown.png';
     p_left_up.src = './imgs/leftUp.png';
 
-    hide.src = './imgs/transparent.png';
-
-    // Sonido ambiente y configuraciones para bulce y volumen
-
-    // sonidoAmbiente_audio.muted = true;
-    // document.body.addEventListener("mousemove", function () {
+    // * Pareded *
+    wall_image.src = './imgs/wallSkin.png';
 
     pasos_audio.src = './sounds/pasos.mp3';
     pasos_audio.preload = 'auto';
     pasos_audio.volume = 0.1;
-    
+
     sonidoAmbiente_audio.src = './sounds/ambiental_sound.mp3';
     sonidoAmbiente_audio.preload = 'auto';
     sonidoAmbiente_audio.loop = true;
     sonidoAmbiente_audio.volume = 0.3;
     sonidoAmbiente_audio.play();
 
-    paint();
+    // * Pared top border
+    for (let x = 100; x < canvas.width; x += 100) {
+        let pared = new Cuadrado(x, 0, wall_image.width, 20);
+        pared.dibujarImage(x, 0, context, wall_image);
+        arregloParedes.push(pared);
+    }
 
+    // * Pared bottom border
+    for (let x = 0; x < canvas.width; x += 100) {
+        let pared = new Cuadrado(x, 980, wall_image.width, 20);
+        pared.dibujarImage(x, 980, context, wall_image);
+        arregloParedes.push(pared);
+    }
+
+    for (let y = 20; y < canvas.height; y += 20) {
+        let pared = new Cuadrado(canvas.width - 30, y, 20, 20);
+        pared.dibujarImage(canvas.width - 30, y, context, wall_image);
+        arregloParedes.push(pared);
+    }
+
+    paint();
 }
 
 //  Funcion de pintar
 const paint = () => {
-    requestAnimationFrame(paint);
+    window.requestAnimationFrame(paint);
 
     // Rellenar el canvas y hacer como que borra el trayecto
-    // context.drawImage(bg_canvas, 0, 0);
-    ptrn = context.createPattern(bg_canvas, 'repeat'); // Create a pattern with this image, and set it to "repeat".
+    ptrn = context.createPattern(bg_canvas, 'repeat');
     context.fillStyle = ptrn;
-    context.fillRect(0, 0, canvas.width, canvas.height); // context.fillRect(x, y, width, height);
+    context.fillRect(0, 0, canvas.width, canvas.height);
 
-    // * Creando los obstaculos
-    // arregloParedes.map((obstaculo) => {
-    //     obstaculo.dibujar(context);
-    // });
+    // * Re pintando las parades
+    arregloParedes.map((pared) => {
+        pared.dibujarImage(pared.x, pared.y, context, wall_image);
+    });
 
     //  * Se dibuja la imagen principal del jugador en el jugador *
     context.drawImage(p_front, player.x, player.y);
 
     //  * Se dibuja la imagen del carne al bono*
     // context.drawImage(carne, player2.x, player2.y);
-
-    //  * Se dibuja la imagen del carne al bono*
-    // arregloParedes.map((obstaculo) => {
-    //     context.drawImage(wall, obstaculo.x, obstaculo.y, 40, 100);
-    // });
 
     if (!pause && !dead) {
         update();
@@ -157,9 +177,7 @@ const update = () => {
     // right side
     if (move[68] == true) {
         player.x += speed;
-        // if (player.x > 1500) {
-        //     player.x = 0;
-        // }
+
         context.drawImage(p_right, player.x, player.y);
         pasos_audio.play();
     }
@@ -167,9 +185,7 @@ const update = () => {
     // down side
     if (move[83] == true) {
         player.y += speed;
-        // if (player.y > 700) {
-        //     player.y = 0;
-        // }
+
         context.drawImage(p_front, player.x, player.y);
         pasos_audio.play();
     }
@@ -177,38 +193,10 @@ const update = () => {
     // left side
     if (move[65] == true) {
         player.x -= speed;
-        // if (player.x < 0) {
-        //     player.x = 1200;
-        // }
+
         pasos_audio.play();
         context.drawImage(p_left, player.x, player.y);
-        // context.drawImage(transparent, player.x, player.y);
     }
-
-    /*
-        TODO: Angulo de direcciones
-
-        // left and down
-        if (move[65] == true && move[83] == true) {
-            context.drawImage(transparent, player.x, player.y);
-            context.drawImage(p_left_down, player.x, player.y);
-        }
-
-        // left and up
-        if (move[65] == true && move[87] == true) {
-            context.drawImage(p_left_up, player.x, player.y);
-        }
-
-        // Right and down
-        if (move[68] == true && move[83] == true) {
-            context.drawImage(p_right_down, player.x, player.y);
-        }
-
-        // Right and up
-        if (move[68] == true && move[87] == true) {
-            context.drawImage(p_right_up, player.x, player.y);
-        }
-    */
 
     // up side
     if (move[87] == true) {
@@ -234,21 +222,22 @@ const update = () => {
     /*
      *   Buscar que nuestro player no toque ninguno de los obstaculos o se detendra el juego
      */
-    // arregloParedes.map((obstaculo) => {
-    //     if (player.se_tocan(obstaculo)) {
-    //         if (player.lifes <= 1) {
-    //             dead = true;
-    //             speed = 0;
-    //         } else {
-    //             player.lifes = player.lifes - 1;
-    //             player.x = getRandomInt(900);
-    //             player.y = getRandomInt(500);
-    //         }
-    //     }
-    // });
+    arregloParedes.map((pared) => {
+        if (player.se_tocan(pared)) {
+            if (move[87] == true) {
+                player.y += speed;
+            }
+            if (move[83] == true) {
+                player.y -= speed;
+            }
+            if (move[68] == true) {
+                player.x -= speed;
+            }
+        }
+    });
 };
 
-// * Clase Cuadrado que es nuestra clase molde para todo los objetos
+// * Clase Cuadrado  que es nuestra clase molde para todo los objetos
 class Cuadrado {
     constructor(x, y, w, h) {
         this.x = x;
@@ -260,6 +249,14 @@ class Cuadrado {
     dibujar = function (context) {
         context.fillRect(this.x, this.y, this.w, this.h);
         context.strokeRect(this.x, this.y, this.w, this.h);
+    };
+
+    dibujarImage = function (x, y, context, image) {
+        ptrn = context.createPattern(image, 'repeat');
+        context.beginPath();
+        context.fillStyle = ptrn;
+        context.fillRect(x, y, image.width, 20);
+        context.closePath();
     };
 
     se_tocan = function (target) {
@@ -298,4 +295,10 @@ document.addEventListener('keyup', function ({ keyCode }) {
     move[keyCode] = false;
 });
 
-window.addEventListener('load', start);
+btn_iniciar.addEventListener('click', () => {
+    modal_parent.style.display = 'none';
+    boton_menu_principal.style.display = 'none';
+    loading();
+});
+
+// window.addEventListener('load', start);
