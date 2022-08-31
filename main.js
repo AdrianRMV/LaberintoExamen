@@ -68,7 +68,6 @@ function loading() {
 
 function start() {
     loader.style.opacity = '0';
-    loader.style.display = 'none';
     document.getElementById('myDiv').style.display = 'block';
 
 
