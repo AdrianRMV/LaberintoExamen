@@ -113,14 +113,14 @@ function start() {
     sonidoAmbiente_audio.play();
 
     // * Pared top border
-    for (let x = 100; x < canvas.width; x += 100) {
+    for (let x = 100; x < canvas.width; x += 20) {
         let pared = new Cuadrado(x, 0, wall_image.width, 20);
         pared.dibujarImage(x, 0, context, wall_image);
         arregloParedes.push(pared);
     }
 
     // * Pared bottom border
-    for (let x = 0; x < canvas.width; x += 100) {
+    for (let x = 0; x < canvas.width; x += 20) {
         let pared = new Cuadrado(x, 980, wall_image.width, 20);
         pared.dibujarImage(x, 980, context, wall_image);
         arregloParedes.push(pared);
