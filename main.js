@@ -74,8 +74,8 @@ function start() {
     canvas = document.getElementById('canvas');
     context = canvas.getContext('2d');
 
-    canvas.width = 1500;
-    canvas.height = 1000;
+    canvas.width = 1000;
+    canvas.height = 600;
 
     bg_canvas.src = './imgs/floorSkin.png';
 
@@ -113,24 +113,24 @@ function start() {
     sonidoAmbiente_audio.play();
 
     // * Pared top border
-    for (let x = 100; x < canvas.width; x += 20) {
-        let pared = new Cuadrado(x, 0, wall_image.width, 20);
+    for (let x = 100; x < canvas.width; x += 100) {
+        let pared = new Cuadrado(x, 0, 100, 20);
         pared.dibujarImage(x, 0, context, wall_image);
         arregloParedes.push(pared);
     }
 
     // * Pared bottom border
-    for (let x = 0; x < canvas.width; x += 20) {
-        let pared = new Cuadrado(x, 980, wall_image.width, 20);
-        pared.dibujarImage(x, 980, context, wall_image);
+    for (let x = 0; x < canvas.width; x += 100) {
+        let pared = new Cuadrado(x, 580, 100, 20);
+        pared.dibujarImage(x, 580, context, wall_image);
         arregloParedes.push(pared);
     }
 
-    for (let y = 20; y < canvas.height; y += 20) {
-        let pared = new Cuadrado(canvas.width - 30, y, 20, 20);
-        pared.dibujarImage(canvas.width - 30, y, context, wall_image);
-        arregloParedes.push(pared);
-    }
+    // for (let y = 20; y < canvas.height; y += 20) {
+    //     let pared = new Cuadrado(canvas.width - 30, y, 20, 20);
+    //     pared.dibujarImage(canvas.width - 30, y, context, wall_image);
+    //     arregloParedes.push(pared);
+    // }
 
     paint();
 }
