@@ -60,7 +60,6 @@ let floor_image = new Image();
 let bg_canvas = new Image();
 
 // ! Audio !
-// TODO: agregar todos los audios
 let sonidoAmbiente_audio = new Audio();
 let completado_audio = new Audio();
 let botonStart_audio = new Audio();
@@ -75,7 +74,15 @@ let ptrn = null;
 
 let tempo;
 
+
+
+// ! FUNCIONES
+// =============================================================================
+
 function loading() {
+    botonStart_audio.src = './sounds/start.mp3';
+    botonStart_audio.volume = 0.1;
+    botonStart_audio.play();
     loader.style.display = 'block';
     loader.style.opacity = '1';
     tempo = setTimeout(start, 2000);
@@ -83,7 +90,10 @@ function loading() {
 
 function start() {
     loader.style.opacity = '0';
-    loader.style.animation = 'fade';
+    loader.style.display = 'none';
+
+    speed = 3.5;
+    console.log(speed)
 
     document.getElementById('myDiv').style.display = 'flex';
     document.getElementById('board').style.display = 'flex';
@@ -143,7 +153,7 @@ function start() {
     sonidoAmbiente_audio.loop = true;
     sonidoAmbiente_audio.volume = 0.3;
     sonidoAmbiente_audio.play();
-
+    
     // ================================================================
 
     wall_image.width = 20;
@@ -153,8 +163,6 @@ function start() {
     paint();
 }
 
-// ! FUNCIONES
-// =============================================================================
 //  * Funcion de pintar
 const paint = () => {
     window.requestAnimationFrame(paint);
@@ -198,10 +206,10 @@ const paint = () => {
         context.fillText('DEAD', 425, 300);
     } else {
         context.fillStyle = 'rgba(0,0,0,0.5)';
-        context.fillRect(0, 0, 1000, 600);
+        context.fillRect(0, 0, canvas.width, canvas.height);
         context.fillStyle = '#fff';
         context.font = '35px Arial';
-        context.fillText('Pause', 425, 300);
+        context.fillText('Pause', 425, 500);
     }
 };
 //  * Funcion de actualizar por cada fotograma
@@ -250,7 +258,7 @@ const update = () => {
         total_s.innerHTML = contador_s;
         total_m.innerHTML = contador_m;
         boton_modal_win.click();
-        btn_iniciar.removeEventListener("click");
+        // btn_iniciar.removeEventListener("click");
     }
 
     /*
@@ -488,7 +496,7 @@ const colocarParedes = () => {
 };
 
 // * Funcion que crea el cronometro del tiempo que le toma al usuario llegar a la meta
-const tiempoGoal = () => {
+const tiempoGoal = (x = 1000) => {
     window.setInterval(function () {
         if(contador_s == 60){
             contador_s = 0;
@@ -500,7 +508,7 @@ const tiempoGoal = () => {
         }
         s.innerHTML = contador_s;
         contador_s+=1;
-    },1000);
+    },x);
 };
 
 // =============================================================================
@@ -575,6 +583,7 @@ btn_iniciar.addEventListener('click', () => {
     boton_menu_principal.style.display = 'none';
     loading();
 });
+
 
 
 
