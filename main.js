@@ -9,7 +9,9 @@ let canvas = null;
 let context = null;
 
 let player = null;
-let wall = null;
+let pared = null;
+// let wall = null;
+
 
 let arregloParedes = [];
 let move = [];
@@ -39,6 +41,10 @@ let witch = new Image();
 // * Skin de la pared
 let wall_image = new Image();
 
+// * Laberinto path
+let laberinto_image = new Image();
+
+
 // * Skin del suelo
 let floor_image = new Image();
 
@@ -53,8 +59,8 @@ let botonStart_audio = new Audio();
 let instrucciones_audio = new Audio();
 let pasos_audio = new Audio();
 
-let x = 240;
-let y = 240;
+let x = 50;
+let y = 50;
 
 let ptrn = null;
 
@@ -63,19 +69,20 @@ let tempo;
 function loading() {
     loader.style.display = 'block';
     loader.style.opacity = '1';
-    tempo = setTimeout(start, 3000);
+    tempo = setTimeout(start, 2000);
 }
 
 function start() {
     loader.style.opacity = '0';
-    document.getElementById('myDiv').style.display = 'block';
+    loader.style.animation = 'fade';
 
+    document.getElementById('myDiv').style.display = 'block';
 
     canvas = document.getElementById('canvas');
     context = canvas.getContext('2d');
 
     canvas.width = 1000;
-    canvas.height = 600;
+    canvas.height = 1200;
 
     bg_canvas.src = './imgs/floorSkin.png';
 
@@ -99,8 +106,11 @@ function start() {
     p_left_down.src = './imgs/leftDown.png';
     p_left_up.src = './imgs/leftUp.png';
 
-    // * Pareded *
+    // * Pared *
     wall_image.src = './imgs/wallSkin.png';
+
+    // * Laberinto *
+    laberinto_image.src='./imgs/laberinto_vacio.png';
 
     pasos_audio.src = './sounds/pasos.mp3';
     pasos_audio.preload = 'auto';
@@ -112,30 +122,17 @@ function start() {
     sonidoAmbiente_audio.volume = 0.3;
     sonidoAmbiente_audio.play();
 
-    // * Pared top border
-    for (let x = 100; x < canvas.width; x += 100) {
-        let pared = new Cuadrado(x, 0, 100, 20);
-        pared.dibujarImage(x, 0, context, wall_image);
-        arregloParedes.push(pared);
-    }
+    wall_image.width = 20;
 
-    // * Pared bottom border
-    for (let x = 0; x < canvas.width; x += 100) {
-        let pared = new Cuadrado(x, 580, 100, 20);
-        pared.dibujarImage(x, 580, context, wall_image);
-        arregloParedes.push(pared);
-    }
-
-    // for (let y = 20; y < canvas.height; y += 20) {
-    //     let pared = new Cuadrado(canvas.width - 30, y, 20, 20);
-    //     pared.dibujarImage(canvas.width - 30, y, context, wall_image);
-    //     arregloParedes.push(pared);
-    // }
+    colocarParedes();
 
     paint();
 }
 
-//  Funcion de pintar
+
+// ! FUNCIONES
+// =============================================================================
+//  * Funcion de pintar
 const paint = () => {
     window.requestAnimationFrame(paint);
 
@@ -146,11 +143,20 @@ const paint = () => {
 
     // * Re pintando las parades
     arregloParedes.map((pared) => {
-        pared.dibujarImage(pared.x, pared.y, context, wall_image);
+        pared.dibujarImage(
+            pared.x,
+            pared.y,
+            context,
+            wall_image,
+            pared.w,
+            pared.h
+        );
     });
 
     //  * Se dibuja la imagen principal del jugador en el jugador *
     context.drawImage(p_front, player.x, player.y);
+
+    context.drawImage(laberinto_image, 20, 40);
 
     //  * Se dibuja la imagen del carne al bono*
     // context.drawImage(carne, player2.x, player2.y);
@@ -171,7 +177,7 @@ const paint = () => {
         context.fillText('Pause', 425, 300);
     }
 };
-
+//  * Funcion de actualizar por cada fotograma
 const update = () => {
     // right side
     if (move[68] == true) {
@@ -223,19 +229,66 @@ const update = () => {
      */
     arregloParedes.map((pared) => {
         if (player.se_tocan(pared)) {
+            // Choca pared arriba
             if (move[87] == true) {
                 player.y += speed;
             }
+            // Choca pared abajo
             if (move[83] == true) {
                 player.y -= speed;
             }
+            // Choca derecha
             if (move[68] == true) {
                 player.x -= speed;
+            }
+            // Choca izquierda
+            if (move[65] == true) {
+                player.x += speed;
             }
         }
     });
 };
 
+// * Funcion de colocar Paredes por el mapa
+const colocarParedes = () => {
+    // * Pared top border
+    // ! Paredes Horizontales
+    pared = new Cuadrado(0, 0, canvas.width, 20);
+    pared.dibujarImage(0, 20, context, wall_image, canvas.width, 20);
+    arregloParedes.push(pared);
+
+    // * Pared bottom border
+    pared = new Cuadrado(0, canvas.height - 20, canvas.width, 20);
+    pared.dibujarImage(0, 20, context, wall_image, canvas.width, 20);
+    arregloParedes.push(pared);
+
+    // * Pared right border
+    // ! Paredes Verticales
+    pared = new Cuadrado(canvas.width - 20, 0, 20, canvas.height);
+    pared.dibujarImage(canvas.width - 20, 0, context, wall_image);
+    arregloParedes.push(pared);
+
+    // * Pared left border
+    pared = new Cuadrado(0, 0, 20, canvas.height);
+    pared.dibujarImage(0, 0, context, wall_image);
+    arregloParedes.push(pared);
+
+    // ==========================================
+    // * Paredes Laberinto
+    pared = new Cuadrado(20, 99, 148, 10);
+    pared.dibujarImage(20, 99, context, wall_image, 148, 10);
+    arregloParedes.push(pared);
+
+    pared = new Cuadrado(220, 20, 10, 136);
+    pared.dibujarImage(220, 20, context, wall_image,20,136);
+    arregloParedes.push(pared);
+
+};
+// =============================================================================
+
+
+// ! CLASES
+// =============================================================================
 // * Clase Cuadrado  que es nuestra clase molde para todo los objetos
 class Cuadrado {
     constructor(x, y, w, h) {
@@ -250,11 +303,12 @@ class Cuadrado {
         context.strokeRect(this.x, this.y, this.w, this.h);
     };
 
-    dibujarImage = function (x, y, context, image) {
+    dibujarImage = function (x, y, context, image, img_width, img_height) {
         ptrn = context.createPattern(image, 'repeat');
         context.beginPath();
         context.fillStyle = ptrn;
-        context.fillRect(x, y, image.width, 20);
+        context.fillRect(x, y, img_width, img_height);
+        // console.log(image.height);
         context.closePath();
     };
 
@@ -277,6 +331,11 @@ class Jugador extends Cuadrado {
         this.lifes = lifes;
     }
 }
+// =============================================================================
+
+
+// ! EVENTOS !
+// =============================================================================
 
 // * Detectar pause
 document.addEventListener('keydown', ({ keyCode }) => {
@@ -299,5 +358,3 @@ btn_iniciar.addEventListener('click', () => {
     boton_menu_principal.style.display = 'none';
     loading();
 });
-
-// window.addEventListener('load', start);
