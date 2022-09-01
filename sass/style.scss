@@ -1,5 +1,13 @@
 @import '../node_modules/bootstrap/scss/bootstrap.scss';
 
+// Mixin responsive px
+@function responsive-px($min-px, $max-px, $min-vw, $max-vw) {
+    @return calc(
+        #{$min-px}px + (#{$max-px} - #{$min-px}) *
+            ((100vw - #{$min-vw}px) / (#{$max-vw} - #{$min-vw}))
+    );
+}
+
 $primary-color: #d5772e;
 
 body {
@@ -165,5 +173,91 @@ body {
     }
     100% {
         transform: rotate(360deg);
+    }
+}
+
+#myDiv {
+    #board {
+        margin-left: 50px;
+        gap: 210px;
+        width: 29%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background-image: url(../imgs/TimeBoard.png);
+        background-repeat: no-repeat;
+        background-size: contain;
+        background-position: center;
+
+        .time-board {
+            p {
+                font-size: responsive-px(44, 54, 768, 1920);
+            }
+        }
+    }
+}
+
+.noselect {
+    -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+    -khtml-user-select: none; /* Konqueror HTML */
+    -moz-user-select: none; /* Old versions of Firefox */
+    -ms-user-select: none; /* Internet Explorer/Edge */
+    user-select: none; /* Non-prefixed version, currently
+                                    supported by Chrome, Edge, Opera and Firefox */
+}
+
+.modal-win {
+    .modal-content {
+        background-image: url(../imgs/win-modal.png) !important;
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center;
+        padding: 110px 0px !important;
+        flex-direction: row;
+        gap: 126px;
+
+        .modal-win-left-side{
+            width: 50%;
+        }
+        .modal-win-right-side{
+            width: 50%;
+        }
+    }
+
+    .modal-dialog {
+        max-width: 850px !important;
+    }
+
+    .img-logo {
+        margin: 0 auto;
+    }
+
+    .modal-header {
+        justify-content: center !important;
+        width: max-content;
+        margin: 0 auto;
+        border: 0 !important;
+    }
+
+    .modal-header {
+        justify-content: center;
+        .btn-close {
+            margin: 0 !important;
+        }
+    }
+
+    .modal-body {
+        text-align: center;
+        h1 {
+            font-weight: 600;
+            letter-spacing: 1.2;
+        }
+    }
+
+    .modal-footer {
+        justify-content: space-evenly !important;
+        border: 0 !important;
     }
 }

@@ -8,8 +8,7 @@
     </head>
 
     <body>
-
-        <div class="loader" id="load" style="display: none"></div> 
+        <div class="loader" id="load" style="display: none"></div>
 
         <!-- Button trigger modal -->
         <div class="btn-play" id="btn-menu">
@@ -27,7 +26,7 @@
             </div>
         </div>
 
-        <!-- Modal -->
+        <!-- Modal para iniciar juego -->
         <div
             class="modal fade"
             id="staticBackdrop"
@@ -71,11 +70,86 @@
             </div>
         </div>
 
+        <!-- Button trigger modal win -->
+        <button
+            style="width: 0%; height: 0%; opacity: 0"
+            data-bs-toggle="modal"
+            data-bs-target="#win-modal"
+            id="btn-modal-win"
+            type="button"
+        ></button>
+
+        <!-- Modal para iniciar juego -->
+        <div
+            class="modal fade modal-win"
+            id="win-modal"
+            data-bs-backdrop="static"
+            data-bs-keyboard="false"
+            tabindex="-1"
+            aria-labelledby="staticBackdropLabel"
+            aria-hidden="true"
+        >
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-win-left-side">
+                        <div class="modal-header">
+                            <div class="img-logo">
+                                <img
+                                    src="./imgs/logo.png"
+                                    alt="Logo Stardew Valley"
+                                />
+                            </div>
+                        </div>
+                        <div class="modal-body">
+                            <h1>FELICIDADES!!!</h1>
+                        </div>
+                        <div class="modal-footer">
+                            <button
+                                type="button"
+                                class="btn btn-secondary"
+                                data-bs-dismiss="modal"
+                            >
+                                Cerrar
+                            </button>
+                            <button
+                                type="button"
+                                data-bs-dismiss="modal-win"
+                                class="btn btn-success"
+                                id="iniciar-btn"
+                            >
+                                Jugar
+                            </button>
+                        </div>
+                    </div>
+                    <div class="modal-win-right-side">
+                        <h1>
+                            Timpo total:
+                            <span>
+                                0<span id="minutos-end"></span>:
+                                <span id="segundos-end"></span>
+                            </span>
+                        </h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="contenedor_padre" id="myDiv">
-            <canvas id="canvas">
+            <canvas id="canvas" class="noselect">
                 Tu navegador no admite el elemento &lt;canvas&gt;.
             </canvas>
+            <div id="board" style="display: none" class="noselect">
+                <img src="./imgs/logo.png" alt="Logo stardew valley" />
+                <div class="time-board">
+                    <p>
+                        0<span id="minutos">0</span>:<span id="segundos"
+                            >0</span
+                        >
+                    </p>
+                </div>
+            </div>
         </div>
+
         <script type="module" src="./main.js"></script>
         <!-- Bootstrap -->
         <script
