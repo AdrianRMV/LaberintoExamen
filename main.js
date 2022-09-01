@@ -12,7 +12,6 @@ let player = null;
 let pared = null;
 // let wall = null;
 
-
 let arregloParedes = [];
 let move = [];
 
@@ -43,7 +42,6 @@ let wall_image = new Image();
 
 // * Laberinto path
 let laberinto_image = new Image();
-
 
 // * Skin del suelo
 let floor_image = new Image();
@@ -110,7 +108,7 @@ function start() {
     wall_image.src = './imgs/wallSkin.png';
 
     // * Laberinto *
-    laberinto_image.src='./imgs/laberinto_vacio.png';
+    laberinto_image.src = './imgs/laberinto_vacio.png';
 
     pasos_audio.src = './sounds/pasos.mp3';
     pasos_audio.preload = 'auto';
@@ -128,7 +126,6 @@ function start() {
 
     paint();
 }
-
 
 // ! FUNCIONES
 // =============================================================================
@@ -249,43 +246,71 @@ const update = () => {
     });
 };
 
+const crearParedes = (x, y, w, h) => {
+    pared = new Cuadrado(x, y, w, h);
+    pared.dibujarImage(x, y, context, wall_image, w, h);
+    arregloParedes.push(pared);
+};
+
 // * Funcion de colocar Paredes por el mapa
 const colocarParedes = () => {
-    // * Pared top border
-    // ! Paredes Horizontales
-    pared = new Cuadrado(0, 0, canvas.width, 20);
-    pared.dibujarImage(0, 20, context, wall_image, canvas.width, 20);
-    arregloParedes.push(pared);
-
-    // * Pared bottom border
-    pared = new Cuadrado(0, canvas.height - 20, canvas.width, 20);
-    pared.dibujarImage(0, 20, context, wall_image, canvas.width, 20);
-    arregloParedes.push(pared);
-
-    // * Pared right border
-    // ! Paredes Verticales
-    pared = new Cuadrado(canvas.width - 20, 0, 20, canvas.height);
-    pared.dibujarImage(canvas.width - 20, 0, context, wall_image);
-    arregloParedes.push(pared);
-
-    // * Pared left border
-    pared = new Cuadrado(0, 0, 20, canvas.height);
-    pared.dibujarImage(0, 0, context, wall_image);
-    arregloParedes.push(pared);
-
-    // ==========================================
     // * Paredes Laberinto
-    pared = new Cuadrado(20, 99, 148, 10);
-    pared.dibujarImage(20, 99, context, wall_image, 148, 10);
-    arregloParedes.push(pared);
+    // ! Num par = VERTICAL
+    // ! Num impar = HORIZONTAL
 
-    pared = new Cuadrado(220, 20, 10, 136);
-    pared.dibujarImage(220, 20, context, wall_image,20,136);
-    arregloParedes.push(pared);
+    crearParedes(0, 0, canvas.width, 20);
+    crearParedes(0, canvas.height - 20, canvas.width, 20);
+    crearParedes(canvas.width - 20, 0, 20, canvas.height);
+    crearParedes(0, 0, 20, canvas.height);
+    crearParedes(20, 99, 148, 10);
+    crearParedes(220, 20, 10, 136);
+    crearParedes(69, 160, 105, 10);
+    crearParedes(165, 99, 10, 66);
+    crearParedes(69, 339, 105, 10);
+    crearParedes(70, 160, 10, 182);
+    crearParedes(169, 218, 103, 10);
+    crearParedes(163, 163, 10, 62);
+    crearParedes(126, 278, 294, 10);
+    crearParedes(120, 221, 10, 66);
+    crearParedes(420, 338, 250, 10);
+    crearParedes(420, 59, 10, 460);
+    crearParedes(621, 279, 247, 10);
+    crearParedes(268, 159, 10, 67);
+    crearParedes(268, 158, 52, 10);
+    crearParedes(319, 68, 10, 100);
+    crearParedes(268, 158, 52, 10);
+    crearParedes(369, 20, 10, 210);
+    crearParedes(322, 223, 55, 10);
+    crearParedes(320, 227, 10, 53);
+    crearParedes(73, 399, 303, 10);
+    crearParedes(215, 281, 10, 61);
+    crearParedes(224, 98, 45, 10);
+    crearParedes(265,339, 10, 180);
+    crearParedes(320, 458, 103, 10);
+    crearParedes(369,339, 10, 65);
+    crearParedes(265, 519, 104, 10);
+    crearParedes(470,59, 10, 161);
+    crearParedes(470, 220, 52, 10);
+    crearParedes(319,283, 10, 56);
+    crearParedes(370, 579, 100, 10);
+    crearParedes(368,520, 10, 62);
+    crearParedes(469, 639, 100, 10);
+    crearParedes(469,582, 10, 62);
+    crearParedes(472, 399, 148, 10);
+    crearParedes(472,402, 10, 59);
+
+
+
+
+
+
+
+
+
+
 
 };
 // =============================================================================
-
 
 // ! CLASES
 // =============================================================================
@@ -332,7 +357,6 @@ class Jugador extends Cuadrado {
     }
 }
 // =============================================================================
-
 
 // ! EVENTOS !
 // =============================================================================
