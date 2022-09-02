@@ -31,15 +31,6 @@ let total_m = document.getElementById('minutos-end');
 
 // ! Imagenes !
 
-// * Protagonista Angulos
-let p_front = new Image();
-let p_right = new Image();
-let p_right_down = new Image();
-let p_right_up = new Image();
-let p_back = new Image();
-let p_left = new Image();
-let p_left_down = new Image();
-let p_left_up = new Image();
 
 // * Transparente
 let hide = new Image();
@@ -173,22 +164,6 @@ function start() {
     // * Novia
     witch.src = './imgs/witch.png';
 
-    // * Enfrente *
-    p_front.src = './imgs/front.png';
-
-    // * Angulos derecha *
-    p_right.src = './imgs/right.png';
-    p_right_down.src = './imgs/rightDown.png';
-    p_right_up.src = './imgs/rightUp.png';
-
-    // * Abajo *
-    p_back.src = './imgs/back.png';
-
-    // * Angulos izquierda *
-    p_left.src = './imgs/left.png';
-    p_left_down.src = './imgs/leftDown.png';
-    p_left_up.src = './imgs/leftUp.png';
-
     // * Pared *
     wall_image.src = './imgs/wallSkin.png';
 
@@ -251,8 +226,6 @@ const paint = () => {
     //  * Se dibuja la imagen principal del jugador en el jugador *
 
     context.drawImage(witch, novia.x, novia.y);
-
-    // context.drawImage(laberinto_image, 20, 20);
 
     if (!pause && !dead) {
         update();
