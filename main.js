@@ -109,8 +109,8 @@ function start() {
 
     player = new Jugador(x, y, 20, 37, 3);
 
-    // novia = new Cuadrado(950,1146,20,37);
-    novia = new Cuadrado(194,163,20,37);
+    novia = new Cuadrado(950,1146,20,37);
+    // novia = new Cuadrado(194,163,20,37);
 
     // ==============================================================
 

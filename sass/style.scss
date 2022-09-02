@@ -181,13 +181,15 @@ body {
         margin-left: 50px;
         gap: 210px;
         width: 29%;
+        background-size: cover;
+        height: 100vh;
+        border-radius: 10px;
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
         background-image: url(../imgs/TimeBoard.png);
         background-repeat: no-repeat;
-        background-size: contain;
         background-position: center;
 
         .time-board {
@@ -218,10 +220,10 @@ body {
         flex-direction: row;
         gap: 46px;
 
-        .modal-win-left-side{
+        .modal-win-left-side {
             width: 50%;
         }
-        .modal-win-right-side{
+        .modal-win-right-side {
             width: 50%;
             padding-left: 20px;
         }
