@@ -71,13 +71,70 @@ let x = 40;
 let y = 30;
 
 let ptrn = null;
-
 let tempo;
 
+const frameWidth = 17;
+const frameHeight = 32;
+const scale = 1;
+const fps = 60;
+const secondsToUpdate = 0.1 * fps;
+let frameIndex = 0;
+let count = 0;
 
+const spriteSheet = new Image();
+spriteSheet.src = './imgs/spriteSheets.png';
 
 // ! FUNCIONES
 // =============================================================================
+
+const State = {
+    states: {},
+    generateState: function (name, startIndex, endIndex) {
+        if (!this.states[name]) {
+            this.states[name] = {
+                frameIndex: startIndex,
+                startIndex: startIndex,
+                endIndex: endIndex,
+            };
+        }
+    },
+    getState: function (name) {
+        if (this.states[name]) {
+            return this.states[name];
+        }
+    },
+};
+
+State.generateState('nomove', 0, 0);
+State.generateState('down', 0, 3);
+State.generateState('up', 4, 7);
+State.generateState('left', 8, 11);
+State.generateState('right', 12, 15);
+State.generateState('dance', 16, 19);
+
+function animate(state) {
+    context.drawImage(
+        spriteSheet,
+        state.frameIndex * frameWidth,
+        0,
+        frameWidth,
+        frameHeight,
+        player.x,
+        player.y,
+        frameWidth * scale,
+        frameHeight * scale
+    );
+
+    count++;
+    if (count > secondsToUpdate) {
+        state.frameIndex++;
+        count = 0;
+    }
+
+    if (state.frameIndex > state.endIndex) {
+        state.frameIndex = state.startIndex;
+    }
+}
 
 function loading() {
     botonStart_audio.src = './sounds/start.mp3';
@@ -91,9 +148,6 @@ function loading() {
 function start() {
     loader.style.opacity = '0';
     loader.style.display = 'none';
-
-    speed = 3.5;
-    console.log(speed)
 
     document.getElementById('myDiv').style.display = 'flex';
     document.getElementById('board').style.display = 'flex';
@@ -109,15 +163,15 @@ function start() {
 
     player = new Jugador(x, y, 20, 37, 3);
 
-    novia = new Cuadrado(950,1146,20,37);
-    // novia = new Cuadrado(194,163,20,37);
+    // novia = new Cuadrado(950,1146,20,37);
+    novia = new Cuadrado(194,163,20,37);
 
     // ==============================================================
 
     // ! IMAGENES !
 
     // * Novia
-    witch.src = "./imgs/witch.png"
+    witch.src = './imgs/witch.png';
 
     // * Enfrente *
     p_front.src = './imgs/front.png';
@@ -153,7 +207,7 @@ function start() {
     sonidoAmbiente_audio.loop = true;
     sonidoAmbiente_audio.volume = 0.3;
     sonidoAmbiente_audio.play();
-    
+
     // ================================================================
 
     wall_image.width = 20;
@@ -184,17 +238,21 @@ const paint = () => {
         );
     });
 
+    if (move[87] == false || move[87] == undefined) {
+        if(move[83] == false || move[83] == undefined){
+            if(move[68] == false || move[68] == undefined){
+                if(move[65] == false || move[65] == undefined){
+                    animate(State.getState('nomove', player.x, player.y));
+                }
+            }
+        }
+    }
+
     //  * Se dibuja la imagen principal del jugador en el jugador *
-    context.drawImage(p_front, player.x, player.y);
 
-    context.drawImage(witch,novia.x,novia.y);
-
-    
+    context.drawImage(witch, novia.x, novia.y);
 
     // context.drawImage(laberinto_image, 20, 20);
-
-    //  * Se dibuja la imagen del carne al bono*
-    // context.drawImage(carne, player2.x, player2.y);
 
     if (!pause && !dead) {
         update();
@@ -217,34 +275,28 @@ const update = () => {
     // right side
     if (move[68] == true) {
         player.x += speed;
-
-        context.drawImage(p_right, player.x, player.y);
+        animate(State.getState('right', player.x, player.y));
         pasos_audio.play();
     }
 
     // down side
     if (move[83] == true) {
         player.y += speed;
-
-        context.drawImage(p_front, player.x, player.y);
+        animate(State.getState('down', player.x, player.y));
         pasos_audio.play();
     }
 
     // left side
     if (move[65] == true) {
         player.x -= speed;
-
+        animate(State.getState('left', player.x, player.y));
         pasos_audio.play();
-        context.drawImage(p_left, player.x, player.y);
     }
 
     // up side
     if (move[87] == true) {
         player.y -= speed;
-        if (player.y < 0) {
-            player.y = 700;
-        }
-        context.drawImage(p_back, player.x, player.y);
+        animate(State.getState('up', player.x, player.y));
         pasos_audio.play();
     }
 
@@ -498,17 +550,17 @@ const colocarParedes = () => {
 // * Funcion que crea el cronometro del tiempo que le toma al usuario llegar a la meta
 const tiempoGoal = (x = 1000) => {
     window.setInterval(function () {
-        if(contador_s == 60){
+        if (contador_s == 60) {
             contador_s = 0;
             contador_m++;
             m.innerHTML = contador_m;
-            if(contador_m === 0 ){
+            if (contador_m === 0) {
                 contador_m = 0;
             }
         }
         s.innerHTML = contador_s;
-        contador_s+=1;
-    },x);
+        contador_s += 1;
+    }, x);
 };
 
 // =============================================================================
@@ -583,7 +635,3 @@ btn_iniciar.addEventListener('click', () => {
     boton_menu_principal.style.display = 'none';
     loading();
 });
-
-
-
-
