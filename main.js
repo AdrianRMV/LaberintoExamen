@@ -31,7 +31,6 @@ let total_m = document.getElementById('minutos-end');
 
 // ! Imagenes !
 
-
 // * Transparente
 let hide = new Image();
 
@@ -52,9 +51,17 @@ let bg_canvas = new Image();
 
 // ! Audio !
 let sonidoAmbiente_audio = new Audio();
+
 let completado_audio = new Audio();
+completado_audio.src = './sounds/completed.mp3';
+completado_audio.volume = 0.7;
+
 let botonStart_audio = new Audio();
+
 let instrucciones_audio = new Audio();
+instrucciones_audio.src = './sounds/option_sound.mp3';
+instrucciones_audio.volume = 0.2;
+
 let pasos_audio = new Audio();
 
 // Posicion inicial jugador
@@ -139,7 +146,6 @@ function loading() {
 function start() {
     loader.style.opacity = '0';
     loader.style.display = 'none';
-
     document.getElementById('myDiv').style.display = 'flex';
     document.getElementById('board').style.display = 'flex';
     tiempoGoal();
@@ -154,8 +160,7 @@ function start() {
 
     player = new Jugador(x, y, 20, 37, 3);
 
-    // novia = new Cuadrado(950,1146,20,37);
-    novia = new Cuadrado(194,163,20,37);
+    novia = new Cuadrado(950,1146,20,37);
 
     // ==============================================================
 
@@ -214,9 +219,9 @@ const paint = () => {
     });
 
     if (move[87] == false || move[87] == undefined) {
-        if(move[83] == false || move[83] == undefined){
-            if(move[68] == false || move[68] == undefined){
-                if(move[65] == false || move[65] == undefined){
+        if (move[83] == false || move[83] == undefined) {
+            if (move[68] == false || move[68] == undefined) {
+                if (move[65] == false || move[65] == undefined) {
                     animate(State.getState('nomove', player.x, player.y));
                 }
             }
@@ -275,6 +280,7 @@ const update = () => {
 
     // * Player se toca con la novia activa modal de win
     if (player.se_tocan(novia)) {
+        completado_audio.play();
         novia.width = 0;
         novia.height = 0;
         novia.x = 2000;
@@ -607,4 +613,8 @@ btn_iniciar.addEventListener('click', () => {
     modal_parent.style.display = 'none';
     boton_menu_principal.style.display = 'none';
     loading();
+});
+
+boton_menu_principal.addEventListener('click', () => {
+    instrucciones_audio.play();
 });
