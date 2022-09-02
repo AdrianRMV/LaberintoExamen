@@ -74,8 +74,6 @@ let ptrn = null;
 
 let tempo;
 
-
-
 // ! FUNCIONES
 // =============================================================================
 
@@ -93,7 +91,7 @@ function start() {
     loader.style.display = 'none';
 
     speed = 3.5;
-    console.log(speed)
+    console.log(speed);
 
     document.getElementById('myDiv').style.display = 'flex';
     document.getElementById('board').style.display = 'flex';
@@ -110,14 +108,14 @@ function start() {
     player = new Jugador(x, y, 20, 37, 3);
 
     // novia = new Cuadrado(950,1146,20,37);
-    novia = new Cuadrado(194,163,20,37);
+    novia = new Cuadrado(194, 163, 20, 37);
 
     // ==============================================================
 
     // ! IMAGENES !
 
     // * Novia
-    witch.src = "./imgs/witch.png"
+    witch.src = './imgs/witch.png';
 
     // * Enfrente *
     p_front.src = './imgs/front.png';
@@ -153,7 +151,7 @@ function start() {
     sonidoAmbiente_audio.loop = true;
     sonidoAmbiente_audio.volume = 0.3;
     sonidoAmbiente_audio.play();
-    
+
     // ================================================================
 
     wall_image.width = 20;
@@ -187,9 +185,7 @@ const paint = () => {
     //  * Se dibuja la imagen principal del jugador en el jugador *
     context.drawImage(p_front, player.x, player.y);
 
-    context.drawImage(witch,novia.x,novia.y);
-
-    
+    context.drawImage(witch, novia.x, novia.y);
 
     // context.drawImage(laberinto_image, 20, 20);
 
@@ -498,17 +494,17 @@ const colocarParedes = () => {
 // * Funcion que crea el cronometro del tiempo que le toma al usuario llegar a la meta
 const tiempoGoal = (x = 1000) => {
     window.setInterval(function () {
-        if(contador_s == 60){
+        if (contador_s == 60) {
             contador_s = 0;
             contador_m++;
             m.innerHTML = contador_m;
-            if(contador_m === 0 ){
+            if (contador_m === 0) {
                 contador_m = 0;
             }
         }
         s.innerHTML = contador_s;
-        contador_s+=1;
-    },x);
+        contador_s += 1;
+    }, x);
 };
 
 // =============================================================================
@@ -586,4 +582,71 @@ btn_iniciar.addEventListener('click', () => {
 
 
 
+const frameWidth = 16;
+const frameHeight = 32;
+const xPos = 130; //player x
+const yPos = 160; // player y
+const scale = 1;
+const fps = 60;
+const secondsToUpdate = 0.06 * fps;
+let frameIndex = 0;
+let count = 0;
 
+const spriteSheet = new Image();
+spriteSheet.src = './imgs/spriteSheets.png';
+
+const State = {
+    states: {},
+    generateState: function (name, startIndex, endIndex) {
+        if (!this.states[name]) {
+            this.states[name] = {
+                frameIndex: startIndex,
+                startIndex: startIndex,
+                endIndex: endIndex,
+            };
+        }
+    },
+    getState: function (name) {
+        if (this.states[name]) {
+            return this.states[name];
+        }
+    },
+};
+
+State.generateState('breath', 0, 4);
+State.generateState('angry', 4, 8);
+State.generateState('jump', 8, 14);
+
+function animate(state) {
+    context.drawImage(
+        spriteSheet,
+        state.frameIndex * frameWidth,
+        0,
+        frameWidth,
+        frameHeight,
+        xPos,
+        yPos,
+        frameWidth * scale,
+        frameHeight * scale
+    );
+
+    count++;
+    if (count > secondsToUpdate) {
+        state.frameIndex++;
+        count = 0;
+    }
+
+    if (state.frameIndex > state.endIndex) {
+        state.frameIndex = state.startIndex;
+    }
+}
+// Dentro del paint se llamara la funcion de estado segun se este moviendo
+function frame() {
+
+    animate(State.getState('breath'));
+    // animate(State.getState("angry"));
+    // animate(State.getState("jump"));
+    requestAnimationFrame(frame);
+}
+
+frame();
