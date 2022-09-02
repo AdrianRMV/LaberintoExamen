@@ -17,7 +17,7 @@ let pared = null;
 let arregloParedes = [];
 let move = [];
 
-let speed = 3.5;
+let speed = 3.1;
 let dead = false;
 let pause = false;
 
@@ -71,19 +71,17 @@ let y = 30;
 let ptrn = null;
 let tempo;
 
+// Player Sprites
 const frameWidth = 17;
 const frameHeight = 32;
 const scale = 1;
 const fps = 60;
-const secondsToUpdate = 0.1 * fps;
+const secondsToUpdate = 0.10 * fps;
 let frameIndex = 0;
 let count = 0;
 
 const spriteSheet = new Image();
 spriteSheet.src = './imgs/spriteSheets.png';
-
-// ! FUNCIONES
-// =============================================================================
 
 const State = {
     states: {},
@@ -134,6 +132,9 @@ function animate(state) {
     }
 }
 
+// =========================================================================
+// ! FUNCIONES
+// 
 function loading() {
     botonStart_audio.src = './sounds/start.mp3';
     botonStart_audio.volume = 0.1;
@@ -289,11 +290,10 @@ const update = () => {
         total_s.innerHTML = contador_s;
         total_m.innerHTML = contador_m;
         boton_modal_win.click();
-        // btn_iniciar.removeEventListener("click");
     }
 
     /*
-     *   Buscar que nuestro player no toque ninguno de los obstaculos o se detendra el juego
+     *   Buscar que nuestro player no toque ninguna pared o chocara con esta
      */
     arregloParedes.map((pared) => {
         if (player.se_tocan(pared)) {
